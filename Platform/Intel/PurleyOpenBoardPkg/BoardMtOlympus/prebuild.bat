@@ -22,7 +22,7 @@ if %SCRIPT_ERROR% NEQ 0 GOTO :done
 
 :prebuildFinish
 echo.
-echo   ACTIVE_PLATFORM              = %WORKSPACE%\edk2-platforms\Platform\Intel\%BOARD_PKG%\%BOARD_NAME%\PlatformPkg.dsc
+echo   ACTIVE_PLATFORM              = %WORKSPACE%\purley-platforms\Platform\Intel\%BOARD_PKG%\%BOARD_NAME%\PlatformPkg.dsc
 echo   EDK_TOOLS_PATH               = %EDK_TOOLS_PATH%
 echo   TARGET                       = %TARGET%
 echo   TARGET_ARCH                  = IA32 X64
@@ -157,7 +157,7 @@ set /a prebuildstep=%prebuildstep%+1
 set /a BUILD_MAX_CON_THREAD_NUM = %NUMBER_OF_PROCESSORS%-1
 @REM set /a BUILD_MAX_CON_THREAD_NUM = 1
 findstr /V "ACTIVE_PLATFORM TARGET TARGET_ARCH TOOL_CHAIN_TAG BUILD_RULE_CONF MAX_CONCURRENT_THREAD_NUMBER" %WORKSPACE%\Conf\target.txt > %OUTPUT_DIR%\target.txt 2>NUL
-echo ACTIVE_PLATFORM             = %WORKSPACE%/edk2-platforms/Platform/Intel/%BOARD_PKG%/%BOARD_NAME%/PlatformPkg.dsc >> %OUTPUT_DIR%\target.txt
+echo ACTIVE_PLATFORM             = %WORKSPACE%/purley-platforms/Platform/Intel/%BOARD_PKG%/%BOARD_NAME%/PlatformPkg.dsc >> %OUTPUT_DIR%\target.txt
 echo TARGET                      = %TARGET%                       >> %OUTPUT_DIR%\target.txt
 echo TARGET_ARCH                 = IA32 X64                       >> %OUTPUT_DIR%\target.txt
 echo TOOL_CHAIN_TAG              = %TOOL_CHAIN_TAG%               >> %OUTPUT_DIR%\target.txt
@@ -190,7 +190,7 @@ if %ERRORLEVEL% NEQ 0 EXIT /b %ERRORLEVEL%
 @REM MCTL == FIX8
 set AML_FILTER="\"PSYS\" .MCTL\" .FIX[0-9,A-Z]\""
 echo AML_FILTER=%AML_FILTER%
-call %PYTHON_HOME%\python.exe %WORKSPACE%\edk2-platforms\Platform\Intel\MinPlatformPkg\Tools\AmlGenOffset\AmlGenOffset.py -d --aml_filter %AML_FILTER% -o %WORKSPACE%\edk2-platforms\Platform\Intel\%BOARD_PKG%\Acpi\BoardAcpiDxe\AmlOffsetTable.c %OUTPUT_DIR%\X64\PurleyOpenBoardPkg\Acpi\BoardAcpiDxe\DSDT\OUTPUT\Dsdt\WFPPlatform.offset.h
+call %PYTHON_HOME%\python.exe %WORKSPACE%\purley-platforms\Platform\Intel\MinPlatformPkg\Tools\AmlGenOffset\AmlGenOffset.py -d --aml_filter %AML_FILTER% -o %WORKSPACE%\purley-platforms\Platform\Intel\%BOARD_PKG%\Acpi\BoardAcpiDxe\AmlOffsetTable.c %OUTPUT_DIR%\X64\PurleyOpenBoardPkg\Acpi\BoardAcpiDxe\DSDT\OUTPUT\Dsdt\WFPPlatform.offset.h
 echo.
 echo GenOffset done
 
