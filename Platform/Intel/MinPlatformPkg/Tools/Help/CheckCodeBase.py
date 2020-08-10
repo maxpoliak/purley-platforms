@@ -82,7 +82,7 @@ class FileChecker:
             # MODULE_DIR = c:\home\edkiigit\edk2\MdeModulePkg\Library\BaseSerialPortLib16550
             if "MODULE_DIR =" in line:
                 moduleDir = line.split(" = ")[1]
-            # BUILD_DIR = c:\home\edkiigit\Build\KabylakeOpenBoardPkg\KabylakeRvp3\DEBUG_VS2015x86
+            # BUILD_DIR = c:\home\edkiigit\Build\PurleyOpenBoardPkg\BoardMtOlympus\DEBUG_VS2015x86
             if "BUILD_DIR =" in line:
                 buildDir = line.split(" = ")[1]
         makefile.close()
@@ -639,7 +639,7 @@ def usage():
     print "  module file  : all files in a driver directory"
     print "  all file     : all files in project, including any other metadata files or batch files"
     #print "Usage: \n\tCheckCodeBase <Build Dir> time|touch"
-    print "For Example: \n\tCheckCodeBase Build\KabylakeOpenBoardPkg\KabylakeRvp3\DEBUG_VS2015x86 used"
+    print "For Example: \n\tCheckCodeBase Build\PurleyOpenBoardPkg\BoardMtOlympus\DEBUG_VS2015x86 used"
 
 def main():
     global FileChecker
