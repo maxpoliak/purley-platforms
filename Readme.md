@@ -1,7 +1,7 @@
 ## Purley Platforms
 
 The fork from [edk2-platforms](https://github.com/tianocore/edk2-platforms/blob/about/Readme.md)
-master branch with Intel Purley Server platforms support [(License)](License.txt).
+master branch with Intel Purley Server platforms support [(License)](Info/License.txt).
 
 ## How to build (Linux Environment)
 
