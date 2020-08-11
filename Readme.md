@@ -1,71 +1,9 @@
-This branch holds all platforms actively maintained against the
-[edk2](https://github.com/tianocore/edk2) master branch.
+## Purley Platforms
 
-For generic information about the edk2-platforms repository, and the process
-under which _stable_ and _devel_ branches can be added for individual platforms,
-please see
-[the introduction on the about branch](https://github.com/tianocore/edk2-platforms/blob/about/Readme.md).
+The fork from [edk2-platforms](https://github.com/tianocore/edk2-platforms/blob/about/Readme.md)
+master branch with Intel Purley Server platforms support [(License)](License.txt).
 
-The majority of the content in the EDK II open source project uses a
-[BSD-2-Clause Plus Patent License](License.txt).  Additional details on EDK II
-open source project code contributions can be found in the edk2 repository
-[Readme.md](https://github.com/tianocore/edk2/blob/master/Readme.md).
-
-# INDEX
-* [Overview](#overview)
-* [How To Build (Linux Environment)](#how-to-build-linux-environment)
-   * [Manual building](#manual-building)
-   * [Using uefi-tools helper scripts](#using-uefi-tools-helper-scripts)
-* [How To Build (Windows Environment)](#how-to-build-windows-environment)
-* [Supported Platforms](#supported-platforms)
-* [Maintainers](#maintainers)
-
-# Overview
-
-Platform description files can be found under `Platform/{Vendor}/{Platform}`.
-
-Many platforms require additional image processing beyond the EDK2 build.
-Any such steps should be documented (as a Readme.md), and any necessary helper
-scripts be contained, under said platform directory.
-
-Any contributions to this branch should be submitted via email to the
-edk2-devel mailing list with a subject prefix of `[platforms]`. See
-[Laszlo's excellent guide](https://github.com/tianocore/tianocore.github.io/wiki/Laszlo's-unkempt-git-guide-for-edk2-contributors-and-maintainers) for details
-on how to do this successfully.
-
-# How to build (Linux Environment)
-
-## Prerequisites
-The build tools themselves depend on Python (2) and libuuid. Most Linux systems
-will come with a Python environment installed by default, but you usually need
-to install uuid-dev (or uuid-devel, depending on distribution) manually.
-
-## If cross compiling
-If building EDK2 for a different archtecture than the build machine, you need to
-obtain an appropriate cross-compiler. X64 (x86_64) compilers also support IA32,
-but the reverse may not always be true.
-
-Target architecture | Cross compilation prefix
---------------------|-------------------------
-AARCH64             | aarch64-linux-gnu-
-ARM                 | arm-linux-gnueabihf-
-IA32                | i?86-linux-gnu-* _or_ x86_64-linux-gnu-
-IPF                 | ia64-linux-gnu
-X64                 | x86_64-linux-gnu-
-
-\* i386, i486, i586 or i686
-
-### GCC
-Linaro provides GCC toolchains for
-[aarch64-linux-gnu](https://releases.linaro.org/components/toolchain/binaries/latest/aarch64-linux-gnu/)
-and [arm-linux-gnueabihf](https://releases.linaro.org/components/toolchain/binaries/latest/arm-linux-gnueabihf/)
-compiled to run on x86_64/i686 Linux and i686 Windows. Some Linux distributions
-provide their own packaged cross-toolchains.
-
-### clang
-Clang does not require separate cross compilers, but it does need a
-target-specific binutils. These are included with any prepackaged GCC toolchain
-(see above), or can be installed or built separately.
+## How to build (Linux Environment)
 
 ## Obtaining source code
 1. Create a new folder (directory) on your local development machine
@@ -78,15 +16,15 @@ target-specific binutils. These are included with any prepackaged GCC toolchain
    ```
 
 1. Into that folder, clone:
-   1. [edk2](https://github.com/tianocore/edk2)
-   1. [edk2-platforms](https://github.com/tianocore/edk2-platforms)
-   1. [edk2-non-osi](https://github.com/tianocore/edk2-non-osi) (if building
+   - [edk2](https://github.com/tianocore/edk2)
+   - [purley-platforms](https://github.com/maxpoliak/purley-platforms.git)
+   - [edk2-non-osi](https://github.com/tianocore/edk2-non-osi) (if building
       platforms that need it)
    ```
    $ git clone https://github.com/tianocore/edk2.git
    $ git submodule update --init
    ...
-   $ git clone https://github.com/tianocore/edk2-platforms.git
+   $ git clone https://github.com/maxpoliak/purley-platforms.git
    ...
    $ git clone https://github.com/tianocore/edk2-non-osi.git
    ```
@@ -94,7 +32,7 @@ target-specific binutils. These are included with any prepackaged GCC toolchain
 1. Set up a **PACKAGES_PATH** to point to the locations of these three
    repositories:
 
-   `$ export PACKAGES_PATH=$PWD/edk2:$PWD/edk2-platforms:$PWD/edk2-non-osi`
+   `$ export PACKAGES_PATH=$PWD/edk2:$PWD/purley-platforms:$PWD/edk2-non-osi`
 
 ## Manual building
 
@@ -133,120 +71,10 @@ After a successful build, the resulting images can be found in
 `Build/{Platform Name}/{TARGET}_{TOOL_CHAIN_TAG}/FV`.
 
 ### Build a platform
-The main build process _can_ run in parallel - so figure out how many threads we
-have available.
-
-```
-$ getconf _NPROCESSORS_ONLN
-8
-```
-OK, so we have 8 CPUs - let's tell the build to use a little more than that:
-```
-$ NUM_CPUS=$((`getconf _NPROCESSORS_ONLN` + 2))
-```
-For the toolchain tag, use GCC5 for gcc version 5 or later, GCC4x for
-earlier versions, or CLANG35/CLANG38 as appropriate when building with clang.
-```
-$ build -n $NUM_CPUS -a AARCH64 -t GCC5 -p Platform/ARM/JunoPkg/ArmJuno.dsc
-```
-(Note that the description file gets resolved by the build command through
-searching in all locations specified in **PACKAGES_PATH**.)
-
-#### If cross-compiling
-When cross-compiling, or building with a different version of the compiler than
-the default `gcc` or `clang`(/binutils), we additionally need to inform the
-build command which toolchain to use. We do this by setting the environment
-variable `{TOOL_CHAIN_TAG}_{TARGET_ARCH}_PREFIX` - in the case above,
-**GCC5_AARCH64_PREFIX**.
-
-So, referring to the cross compiler toolchain table above, we should prepend the `build` command line with `GCC5_AARCH64_PREFIX=aarch64-linux-gnu-`.
-
-## Using uefi-tools helper scripts
-uefi-tools is a completely unofficial set of helper-scripts developed by Linaro.
-They automate figuring out all of the manual options above, and store the paths
-to platform description files in a separate configuration file. Additionally,
-they simplify bulk-building large numbers of platforms.
-
-The (best effort) intent is to keep this configuration up to date with all
-platforms that exist in the edk2-platforms master branch.
-
-The equivalent of the manual example above would be
-```
-$ git clone https://git.linaro.org/uefi/uefi-tools.git
-...
-$ ./uefi-tools/edk2-build.sh juno
-...
-------------------------------------------------------------
-                         aarch64 Juno (AARCH64) RELEASE pass
-------------------------------------------------------------
-pass   1
-fail   0
-```
-The build finishes with a summary of which platforms/targets were built, which
-succeeded and which failed (and the total number of either).
-
-Like the `build` command itself, `edk2-build.sh` it supports specifying multiple
-targets on a single command line, but it also lets you specify multiple
-platforms (or `all` for building all known platforms). So in order to build all
-platforms described by the configuration file, for both DEBUG and RELEASE
-targets:
-```
-$ ./uefi-tools/edk2-build.sh -b DEBUG -b RELEASE
-```
-
-# How To Build (Windows Environment)
-
-(I genuinely have no idea. Please help!)
-
 
 # Supported Platforms
 
-These are the platforms currently supported by this tree - grouped by
-Processor/SoC vendor, rather than platform vendor.
-
-If there are any additional build steps beyond the generic ones listed above,
-they will be documented with the platform.
-
-## AMD
-* [Cello](Platform/LeMaker/CelloBoard)
-* [Overdrive](Platform/AMD/OverdriveBoard)
-* [Overdrive 1000](Platform/SoftIron/Overdrive1000Board)
-
-## [ARM](Platform/ARM/Readme.md)
-
-## BeagleBoard
-* [BeagleBoard](Platform/BeagleBoard/BeagleBoardPkg)
-
-## Hisilicon
-* [D02](Platform/Hisilicon/D02)
-* [D03](Platform/Hisilicon/D03)
-* [D05](Platform/Hisilicon/D05)
-* [HiKey](Platform/Hisilicon/HiKey)
-
-## Intel
-### [Minimum Platforms](Platform/Intel/Readme.md)
-* [Kaby Lake](Platform/Intel/KabylakeOpenBoardPkg)
-* [Purley](Platform/Intel/PurleyOpenBoardPkg)
-* [Simics](Platform/Intel/SimicsOpenBoardPkg)
-* [Whiskey Lake](Platform/Intel/WhiskeylakeOpenBoardPkg)
+* [Olympus](Platform/Intel/PurleyOpenBoardPkg/BoardMtOlympus)
 
 For more information, see the
 [EDK II Minimum Platform Specification](https://edk2-docs.gitbooks.io/edk-ii-minimum-platform-specification).
-### Other Platforms
-##### Intel&reg; Quark SoC X1000 based platforms
-* [Galileo](Platform/Intel/QuarkPlatformPkg)
-##### Minnowboard Max/Turbot based on Intel Valleyview2 SoC
-* [Minnowboard Max](Platform/Intel/Vlv2TbltDevicePkg)
-
-## Marvell
-* [Armada 70x0](Platform/Marvell/Armada)
-
-## Raspberry Pi
-* [Pi 3](Platform/RaspberryPi/RPi3)
-
-## Socionext
-* [SynQuacer](Platform/Socionext/DeveloperBox)
-
-# Maintainers
-
-See [Maintainers.txt](Maintainers.txt).
