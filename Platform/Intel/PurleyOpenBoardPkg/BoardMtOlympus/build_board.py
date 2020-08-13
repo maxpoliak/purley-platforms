@@ -61,7 +61,7 @@ def pre_build_ex(config, functions):
                             "PurleyOpenBoardPkg",
                             "Acpi",
                             "BoardAcpiDxe",
-                            "DSDT",
+                            "Dsdt",
                             "OUTPUT",
                             "Dsdt", "WFPPlatform.offset.h")]
 
