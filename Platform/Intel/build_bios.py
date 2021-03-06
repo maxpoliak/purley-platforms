@@ -663,7 +663,7 @@ def execute_script(command, env_variables, collect_env=False,
     env = {}
     kwarg = {"env": env_variables,
              "universal_newlines": True,
-             "shell": shell,
+             "shell": False,
              "cwd": env_variables["WORKSPACE"]}
 
     if enable_std_pipe or collect_env:
