@@ -20,7 +20,7 @@ master branch with Intel Purley Server platforms support [(License)](Info/Licens
    $ git submodule update --init --recursive
    $ cd ..
 
-   $ git clone https://github.com/tianocore/edk2-non-osi.git -b devel-MinPlatform
+   $ git clone https://github.com/maxpoliak/edk2-non-osi.git -b purley-platforms
 
    $ git clone https://github.com/IntelFsp/FSP.git -b KabylakeFsp0001
 
